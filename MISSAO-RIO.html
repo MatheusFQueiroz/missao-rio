@@ -1,0 +1,396 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MISSÃO RIO</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:"Trebuchet MS",Verdana,sans-serif;color:#2A3081;background:#EAF4FB;display:flex;flex-direction:column;user-select:none}
+header{background:#2A3081;color:#fff;padding:10px 20px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+header h1{font-size:24px;letter-spacing:1px}
+.chip{font-size:19px;font-weight:bold;border-radius:12px;padding:7px 14px;white-space:nowrap}
+#cF{background:#fff;color:#2A3081;margin-left:auto}#cE{background:#FFD900;color:#2A3081}
+#palco{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2vh;padding:1.6vh 2vw;min-height:0}
+button{font:inherit;cursor:pointer}
+.bt{font-weight:bold;border:none;border-radius:16px;color:#fff;padding:1.6vh 30px;font-size:clamp(19px,3.2vh,27px);transition:transform .12s}
+.bt:hover{transform:scale(1.05)}
+.verde{background:#2F9E44}.azul{background:#1C7ED6}.indigo{background:#2A3081}
+#aviso{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);font-size:clamp(18px,3vh,24px);font-weight:bold;padding:12px 26px;border-radius:14px;display:none;background:#E8590C;color:#fff;z-index:40;max-width:90vw;text-align:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
+#festa,#livro{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;gap:1.8vh;text-align:center;padding:3vh 24px;overflow-y:auto}
+#festa{background:rgba(234,244,251,.97);z-index:20}
+#livro{background:rgba(42,48,129,.55);z-index:30}
+#festa>:first-child,#livro>:first-child{margin-top:auto}#festa>:last-child,#livro>:last-child{margin-bottom:auto}
+.tit{font-size:clamp(26px,5.4vh,46px);font-weight:bold;line-height:1.15}
+.sub{font-size:clamp(18px,3.1vh,27px);color:#333;max-width:900px;line-height:1.4}
+.sub b{color:#1C7ED6}
+.emoG{font-size:clamp(56px,11vh,104px);line-height:1}
+.kick{font-size:clamp(14px,2.3vh,19px);font-weight:bold;letter-spacing:2px;color:#1C7ED6}
+.perg{font-size:clamp(20px,3.4vh,30px);font-weight:bold;background:#FFF3BF;border-radius:16px;padding:1.2vh 24px;max-width:900px}
+.ganho{font-size:clamp(20px,3.2vh,28px);font-weight:bold;color:#E67700}.ganho.cinza{color:#868E96}
+.tot{font-size:clamp(26px,4.6vh,40px);font-weight:bold;background:#FFD900;border-radius:16px;padding:1vh 28px}
+.pista{background:#fff;border-radius:16px;padding:1.3vh 2vw;font-size:clamp(18px,3.1vh,28px);font-weight:bold;text-align:center;max-width:1100px;box-shadow:0 4px 14px rgba(42,48,129,.12)}
+.pn{display:inline-block;background:#1C7ED6;color:#fff;border-radius:999px;padding:2px 12px;font-size:.7em;vertical-align:middle;margin-right:8px;letter-spacing:1px}
+.exc{display:inline-block;background:#E8590C;color:#fff;border-radius:50%;width:1.3em;height:1.3em;line-height:1.3em}
+.cartao{background:#fff;border-radius:22px;box-shadow:0 6px 20px rgba(42,48,129,.12);padding:2.2vh 3vw;text-align:center;max-width:960px;width:100%;display:flex;flex-direction:column;align-items:center;gap:1.1vh}
+.tag{font-size:clamp(13px,2vh,17px);font-weight:bold;letter-spacing:1px;color:#fff;background:#1C7ED6;border-radius:999px;padding:5px 16px}
+.emo{font-size:clamp(44px,9vh,86px);line-height:1}
+.frase{font-size:clamp(21px,3.6vh,33px);font-weight:bold;line-height:1.25}
+.desc{font-size:clamp(15px,2.3vh,20px);color:#555}
+.opcoes{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;max-width:1100px}
+.op{font-weight:bold;font-size:clamp(18px,2.9vh,26px);border:3px solid #2A3081;border-radius:18px;background:#fff;color:#2A3081;padding:1.2vh 22px;min-width:230px;display:flex;flex-direction:column;align-items:center;gap:6px;transition:transform .12s,background .12s}
+.op:hover{transform:scale(1.05);background:#EDF2FF}
+.op.off,.op.off:hover{opacity:.28;transform:none;cursor:not-allowed;text-decoration:line-through}
+.op .ico{width:clamp(110px,18vh,160px);height:auto;display:block}
+.op .oe{font-size:clamp(28px,5vh,44px);line-height:1}
+.grade4{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;width:100%}
+.grade4 .op{min-width:0;width:calc(25% - 9px);padding:1vh 8px;font-size:clamp(16px,2.5vh,22px)}
+.op.sim{background:#2F9E44;border-color:#2F9E44;color:#fff}.op.sim:hover{background:#37B24D}
+.op.nao{background:#E8590C;border-color:#E8590C;color:#fff}.op.nao:hover{background:#F76707}
+.op.esq{width:100%;align-items:flex-start;text-align:left;min-width:0}
+.ops-v{display:flex;flex-direction:column;gap:12px;width:min(840px,92vw)}
+.pts{display:flex;gap:8px}.pts i{width:14px;height:14px;border-radius:50%;background:#C5D5EA;display:block}.pts i.f{background:#2F9E44}.pts i.a{background:#FFD900;box-shadow:0 0 0 2px #2A3081}
+.cena{position:relative;width:min(94vw,calc((100vh - 210px) * 1.923));aspect-ratio:1000/520;border-radius:20px;overflow:hidden;box-shadow:0 6px 20px rgba(42,48,129,.18);flex-shrink:0}
+.cena svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pin,.hot,.est{position:absolute;transform:translate(-50%,-50%);border-radius:50%;border:4px solid #fff;color:#fff;font-weight:bold;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(0,0,0,.3)}
+.pin{width:clamp(42px,7.5vh,60px);height:clamp(42px,7.5vh,60px);background:#2A3081;font-size:clamp(20px,3.6vh,30px)}
+.pin:hover{background:#1C7ED6}
+.pin.ok{background:#2F9E44}
+.pin.off,.pin.off:hover{background:#ADB5BD;cursor:not-allowed}
+.pin .rot{position:absolute;top:104%;left:50%;transform:translateX(-50%);background:#2F9E44;color:#fff;font-size:clamp(12px,2vh,16px);padding:2px 9px;border-radius:8px;white-space:nowrap}
+.pin .rot:empty{display:none}
+.hot{width:clamp(40px,7vh,56px);height:clamp(40px,7vh,56px);background:#E8590C;font-size:clamp(22px,4vh,32px);animation:pulsa 1.1s infinite}
+.hot.ok{background:#2F9E44;animation:none;cursor:default}
+.est{width:clamp(50px,9vh,74px);height:clamp(50px,9vh,74px);font-size:clamp(24px,4.4vh,36px);background:#ADB5BD;cursor:default}
+.est.atual{background:#FFD900;animation:pulsa 1.1s infinite;cursor:pointer}
+.est.feito{background:#2F9E44}
+.est.bloq{opacity:.6}
+.rotulo{position:absolute;transform:translateX(-50%);background:#fff;color:#2A3081;border-radius:999px;padding:3px 11px;font-weight:bold;font-size:clamp(11px,1.9vh,16px);white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18)}
+.rotulo.atual{background:#FFD900}.rotulo.feito{background:#D3F9D8}
+.barco{position:absolute;font-size:clamp(30px,6vh,52px);transform:translate(10%,-118%);transition:left 1.5s ease-in-out,top 1.5s ease-in-out;pointer-events:none;line-height:1}
+@keyframes pulsa{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.13)}}
+.saude{display:flex;align-items:center;gap:12px;font-weight:bold;font-size:clamp(17px,2.8vh,24px)}
+.barra{width:clamp(180px,30vw,320px);height:22px;border-radius:11px;background:#DEE2E6;overflow:hidden;display:block}
+.barra i{display:block;height:100%;background:linear-gradient(90deg,#8C6D46,#339AF0);transition:width 1s}
+#rio4{transition:fill 1.2s}
+.chat{display:flex;flex-direction:column;gap:1.4vh;width:100%}
+.msg{display:flex;gap:12px;align-items:flex-start;text-align:left}
+.msg.ia{flex-direction:row-reverse;text-align:left}
+.av{font-size:clamp(36px,7vh,62px);line-height:1}
+.msg p{border-radius:18px;padding:1.2vh 18px;font-size:clamp(19px,3.2vh,29px);font-weight:bold;line-height:1.25;background:#F1F3F5;flex:1}
+.msg.ia p{background:#E7F5FF;border:3px solid #74C0FC}
+.msg small{display:block;font-size:clamp(12px,1.9vh,15px);color:#868E96;font-weight:normal;letter-spacing:1px;text-transform:uppercase}
+.livroBt{padding:1vh 22px;font-size:clamp(16px,2.6vh,22px)}
+.livroCx{background:#fff;border-radius:22px;padding:2.4vh 28px;max-width:1100px;width:100%;text-align:left}
+.livroCx h2{font-size:clamp(24px,4vh,34px);text-align:center;margin-bottom:1.4vh}
+.cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.4vh 28px}
+.cols h3{font-size:clamp(17px,2.7vh,22px);color:#1C7ED6;margin-bottom:4px}
+.cols li{font-size:clamp(15px,2.3vh,19px);color:#333;line-height:1.35;margin-left:20px}
+.capa{display:flex;flex-direction:column;align-items:center;gap:2.2vh;text-align:center}
+.titCapa{font-size:clamp(46px,10vh,92px);font-weight:bold;letter-spacing:3px;line-height:1}
+.selo{font-size:clamp(14px,2.2vh,18px);font-weight:bold;background:#fff;border-radius:999px;padding:5px 16px;letter-spacing:1px}
+#nome{font:inherit;font-size:clamp(22px,3.8vh,32px);padding:1.2vh 18px;border:3px solid #2A3081;border-radius:14px;width:min(520px,86vw);text-align:center;color:#2A3081;user-select:text}
+.cert{background:#fff;border:6px double #2A3081;border-radius:24px;padding:2.2vh 4vw;display:flex;flex-direction:column;align-items:center;gap:1vh;text-align:center;max-width:980px;width:100%}
+.titCert{font-size:clamp(30px,6vh,52px);font-weight:bold;letter-spacing:2px}
+.nomeC{font-size:clamp(26px,5vh,44px);font-weight:bold;color:#1C7ED6;border-bottom:3px solid #FFD900;padding:0 20px}
+.tab{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8vh 26px;width:100%;max-width:820px;margin-top:.6vh}
+.tab div{display:flex;justify-content:space-between;gap:10px;font-size:clamp(15px,2.5vh,21px);border-bottom:1px dashed #C5D5EA;padding-bottom:3px}
+.data{font-size:clamp(14px,2.2vh,18px);color:#868E96}
+</style></head><body>
+<header><h1>🛶 MISSÃO RIO</h1><div class="chip" id="cF">—</div><div class="chip" id="cE">⭐ 0</div></header>
+<div id="palco"></div><div id="aviso"></div><div id="festa"></div><div id="livro"></div>
+<script>(function(){
+var $=function(i){return document.getElementById(i)},palco=$('palco');
+function emb(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+function cada(sel,fn,raiz){[].forEach.call((raiz||palco).querySelectorAll(sel),fn);}
+function aviso(t){var a=$('aviso');a.innerHTML=t;a.style.display='block';clearTimeout(a._t);a._t=setTimeout(function(){a.style.display='none';},2000);}
+function festa(html,bt,fn,cor){var f=$('festa');$('aviso').style.display='none';f.innerHTML=html+(bt?'<button class="bt '+(cor||'verde')+'" id="btF">'+bt+'</button>':'');f.style.display='flex';f.scrollTop=0;
+  if(bt)$('btF').onclick=function(){f.style.display='none';if(fn)fn();};}
+function fecha(){$('festa').style.display='none';}
+function chip(t){$('cF').textContent=t;}
+function mix(a,b,t){function h(c){return [1,3,5].map(function(i){return parseInt(c.substr(i,2),16);});}var x=h(a),y=h(b);return 'rgb('+x.map(function(v,i){return Math.round(v+(y[i]-v)*t);}).join(',')+')';}
+function pontos(k,n){var h='<div class="pts">';for(var i=0;i<n;i++)h+='<i class="'+(i<k?'f':i===k?'a':'')+'"></i>';return h+'</div>';}
+function ganhoTxt(g){return g===2?'<div class="ganho">+2 ⭐ de primeira!</div>':g===1?'<div class="ganho">+1 ⭐</div>':'<div class="ganho cinza">+0 ⭐ · na próxima, leia com calma!</div>';}
+function xy(p){return 'left:'+(p[0]/10)+'%;top:'+(p[1]/5.2)+'%';}
+
+var NOME='',ATUAL=0,EST=0,PTS=[0,0,0,0,0,0];
+function ganha(g){EST+=g;PTS[ATUAL]+=g;$('cE').textContent='⭐ '+EST;}
+
+/* ---------- PARADA 1 · PARTES DO RIO ---------- */
+var P1=[
+ {id:'nascente',nome:'NASCENTE',tit:'É a NASCENTE!',p:'Lugar onde o rio começa, quando a água brota do chão.',d:'Procure lá no alto da montanha, onde tudo começa.',x:'A nascente é onde o rio começa. A nascente do Rio São Francisco fica na Serra da Canastra, em Minas Gerais.'},
+ {id:'curso',nome:'CURSO',tit:'É o CURSO do rio!',p:'Caminho que o rio percorre, da nascente até a foz.',d:'É o próprio rio correndo, lá no meio do caminho.',x:'O curso é todo o caminho que o rio faz, do começo até o fim.'},
+ {id:'afluente',nome:'AFLUENTE',tit:'É um AFLUENTE!',p:'Rio menor que deságua em um rio maior.',d:'Procure um rio mais fino que se junta ao rio principal.',x:'O afluente é um rio menor que entrega a sua água para um rio maior. O Rio Negro é afluente do Rio Amazonas.'},
+ {id:'foz',nome:'FOZ',tit:'É a FOZ!',p:'Lugar onde o rio termina, quando deságua no mar.',d:'Siga o rio até o fim, onde ele encontra o mar.',x:'A foz é onde o rio termina: no mar, num lago ou em outro rio. A foz do Rio Amazonas fica no Oceano Atlântico.'},
+ {id:'bacia',nome:'BACIA HIDROGRÁFICA',tit:'É a BACIA HIDROGRÁFICA!',p:'Região formada pelo rio principal e todos os seus afluentes.',d:'Repare na linha tracejada em volta de todos os rios.',x:'A bacia hidrográfica é a região do rio principal com todos os afluentes. O oeste do Paraná faz parte da Bacia do Rio Paraná.'}
+];
+var PINS=[['nascente',195,212],['curso',371,246],['afluente',623,144],['foz',905,322],['bacia',862,135]];
+var SVG1='<svg viewBox="0 0 1000 520">'+
+ '<rect width="1000" height="520" fill="#CFEBB8"/>'+
+ '<g fill="#8CC56B"><circle cx="300" cy="410" r="20"/><circle cx="330" cy="430" r="16"/><circle cx="520" cy="430" r="18"/><circle cx="555" cy="448" r="14"/><circle cx="720" cy="430" r="19"/><circle cx="760" cy="95" r="17"/><circle cx="790" cy="110" r="13"/><circle cx="470" cy="160" r="15"/><circle cx="90" cy="420" r="18"/></g>'+
+ '<path d="M150,170 C200,40 520,10 700,30 C860,50 905,200 905,300 C905,420 600,470 420,430 C250,400 120,320 150,170 Z" fill="#2F9E44" fill-opacity=".10" stroke="#2A3081" stroke-width="4" stroke-dasharray="14 10"/>'+
+ '<path d="M910,0 C890,150 930,300 900,520 L1000,520 L1000,0 Z" fill="#4DABF7"/>'+
+ '<text x="965" y="260" fill="#fff" font-size="26" font-weight="bold" text-anchor="middle" transform="rotate(90 965 260)" font-family="Trebuchet MS, Verdana, sans-serif">MAR</text>'+
+ '<polygon points="30,340 140,110 200,190 255,95 350,340" fill="#A88B6E"/>'+
+ '<polygon points="140,110 122,148 134,141 146,150 158,141 169,148" fill="#fff"/><polygon points="255,95 232,135 244,128 257,138 270,135" fill="#fff"/>'+
+ '<g fill="none" stroke-linecap="round">'+
+ '<path d="M420,55 C430,140 400,200 470,280" stroke="#1971C2" stroke-width="12"/><path d="M420,55 C430,140 400,200 470,280" stroke="#74C0FC" stroke-width="6"/>'+
+ '<path d="M640,30 C600,120 650,220 606,352" stroke="#1971C2" stroke-width="13"/><path d="M640,30 C600,120 650,220 606,352" stroke="#74C0FC" stroke-width="7"/>'+
+ '<path d="M195,212 C300,300 360,200 470,280 S640,380 720,320 S860,300 940,335" stroke="#1971C2" stroke-width="22"/><path d="M195,212 C300,300 360,200 470,280 S640,380 720,320 S860,300 940,335" stroke="#74C0FC" stroke-width="12"/></g>'+
+ '<circle cx="195" cy="212" r="9" fill="#1971C2"/></svg>';
+function partes(F){
+ var lista=emb(F.itens),k=0,tent=0,nums=emb([1,2,3,4,5]);
+ var h='<div class="pista" id="pista"></div><div class="cena">'+SVG1;
+ PINS.forEach(function(p,i){h+='<button class="pin" data-id="'+p[0]+'" style="'+xy([p[1],p[2]])+'">'+nums[i]+'<span class="rot"></span></button>';});
+ palco.innerHTML=h+'</div><div id="pp"></div>';
+ var pins=[].slice.call(palco.querySelectorAll('.pin'));
+ pins.forEach(function(b){b.onclick=function(){resp(b);};});
+ function monta(){tent=0;var it=lista[k];$('pista').innerHTML='<span class="pn">PISTA '+(k+1)+' DE '+lista.length+'</span>'+it.p;
+  pins.forEach(function(b){b.classList.remove('off');b.disabled=false;});$('pp').innerHTML=pontos(k,lista.length);}
+ function resp(b){if(b.disabled)return;var it=lista[k];
+  if(b.getAttribute('data-id')===it.id){var g=tent===0?2:tent===1?1:0;ganha(g);b.classList.add('ok');b.querySelector('.rot').textContent=it.nome;var ult=k===lista.length-1;
+   festa('<div class="tit">'+it.tit+'</div><div class="sub">'+it.x+'</div>'+ganhoTxt(g),ult?'CONCLUIR A PARADA ✔':'PRÓXIMA PISTA →',function(){if(ult)fimFase();else{k++;monta();}});}
+  else{tent++;b.classList.add('off');b.disabled=true;aviso(it.d);}}
+ monta();
+}
+
+/* ---------- ENGINE DE ESCOLHA (paradas 2, 3, 5 e 6) ---------- */
+function escolha(F){
+ var lista=F.ordem(),k=0,tent=0;
+ function monta(){tent=0;var it=lista[k],h='';
+  if(F.livro)h+='<button class="bt indigo livroBt" id="abreLivro">📖 CONSULTAR O LIVRO</button>';
+  h+='<div class="cartao">'+F.cartao(it)+'</div><div class="opcoes '+(F.grade||'')+'">';
+  F.opcoes(it).forEach(function(o){h+='<button class="op '+(o.cls||'')+'" data-v="'+o.v+'">'+o.html+'</button>';});
+  palco.innerHTML=h+'</div>'+pontos(k,lista.length);
+  cada('.op',function(b){b.onclick=function(){resp(b);};});
+  if(F.livro)$('abreLivro').onclick=abreLivro;}
+ function resp(b){if(b.disabled)return;var it=lista[k];
+  if(b.getAttribute('data-v')===it.c){var g=tent===0?2:tent===1?1:0;ganha(g);var ult=k===lista.length-1;
+   festa('<div class="tit">'+F.titOk(it)+'</div><div class="sub">'+it.x+'</div>'+ganhoTxt(g),ult?'CONCLUIR A PARADA ✔':'PRÓXIMA →',function(){if(ult)fimFase();else{k++;monta();}});}
+  else{tent++;b.disabled=true;b.classList.add('off');aviso(F.dica(it));}}
+ monta();
+}
+
+/* ---------- PARADA 2 · TIPOS DE RIO ---------- */
+function meses(seco){var s='<svg class="ico" viewBox="0 0 134 40">';for(var m=0;m<12;m++){var d=seco.indexOf(m)>=0;s+='<rect x="'+(m*11+2)+'" y="'+(d?22:4)+'" width="9" height="'+(d?6:30)+'" rx="2" fill="'+(d?'#E9C46A':'#1C7ED6')+'"/>';}return s+'<line x1="0" y1="36" x2="134" y2="36" stroke="#2A3081" stroke-width="2"/></svg>';}
+var ICO={
+ perene:meses([]),
+ intermitente:meses([4,5,6,7,8,9]),
+ planalto:'<svg class="ico" viewBox="0 0 134 60"><polygon points="0,60 0,14 54,14 54,40 134,46 134,60" fill="#8CC56B"/><path d="M0,13 L54,13" stroke="#1C7ED6" stroke-width="6"/><path d="M55,14 L57,40" stroke="#74C0FC" stroke-width="7"/><path d="M57,41 L134,46" stroke="#1C7ED6" stroke-width="6"/><circle cx="57" cy="42" r="6" fill="#fff" opacity=".8"/></svg>',
+ planicie:'<svg class="ico" viewBox="0 0 134 60"><polygon points="0,60 0,40 134,40 134,60" fill="#8CC56B"/><path d="M0,40 L134,40" stroke="#1C7ED6" stroke-width="7"/><path d="M50,32 L84,32 L77,39 L57,39 Z" fill="#E8590C"/><path d="M67,32 L67,14 L79,30 Z" fill="#fff" stroke="#2A3081" stroke-width="2"/></svg>'};
+var NT={perene:'PERENE',intermitente:'INTERMITENTE',planalto:'DE PLANALTO',planicie:'DE PLANÍCIE'};
+var P2=[
+ {g:'agua',emo:'💧📅',f:'Tem água o ano inteiro, mesmo na época de seca.',c:'perene',x:'O rio <b>perene</b> tem água o ano todo. Exemplos: Rio Amazonas e Rio Paraná.'},
+ {g:'agua',emo:'🌵☀️',f:'Seca em algumas épocas do ano e volta a ter água quando chove.',c:'intermitente',x:'O rio <b>intermitente</b> é temporário: seca na época da seca e volta na época das chuvas.'},
+ {g:'agua',emo:'🏜️',f:'Os rios do Sertão do Nordeste, que secam quando passa muito tempo sem chover.',c:'intermitente',x:'No Sertão do Nordeste muitos rios são <b>intermitentes</b>: só têm água na época das chuvas.'},
+ {g:'agua',emo:'🌳🚤',f:'O Rio Amazonas, que tem água todos os dias do ano.',c:'perene',x:'O Amazonas nunca seca: é um rio <b>perene</b>.'},
+ {g:'relevo',emo:'⛰️💦',f:'Corre em terreno alto e inclinado, com corredeiras e quedas-d\'água.',c:'planalto',x:'O rio <b>de planalto</b> corre em terreno alto e inclinado, cheio de corredeiras e quedas-d\'água.'},
+ {g:'relevo',emo:'🛶',f:'Corre em terreno plano, com água calma. É bom para navegar.',c:'planicie',x:'O rio <b>de planície</b> corre em terreno plano. A água é calma e os barcos navegam bem.'},
+ {g:'relevo',emo:'💦🌈',f:'O Rio Iguaçu, com as Cataratas, aqui no oeste do Paraná.',c:'planalto',x:'O Iguaçu é rio <b>de planalto</b>: as Cataratas são quedas-d\'água enormes.'},
+ {g:'relevo',emo:'⚡',f:'É o melhor tipo de rio para gerar energia, por causa da força das quedas.',c:'planalto',x:'A água que cai com força gira as turbinas. Por isso o rio <b>de planalto</b> é bom para gerar energia.'},
+ {g:'relevo',emo:'🚢',f:'O Rio Amazonas, onde barcos grandes navegam com calma.',c:'planicie',x:'O Amazonas também é rio <b>de planície</b>: plano e calmo, ótimo para navegar. Um rio pode ser perene E de planície ao mesmo tempo!'}
+];
+
+/* ---------- PARADA 3 · PARA QUE SERVE O RIO ---------- */
+var USOS=[['agua','🚰','Água para beber e higiene'],['alimento','🐟','Alimento'],['energia','⚡','Energia elétrica'],['transporte','🚢','Transporte'],['lazer','🏞️','Lazer e turismo'],['natureza','🦜','Natureza e animais'],['industria','🏭','Indústria']];
+var P3=[
+ {emo:'💡',f:'A lâmpada da sua casa acende.',c:'energia',x:'A força da água gira as turbinas da usina hidrelétrica. A Usina de Itaipu, no Rio Paraná, fica aqui no oeste do Paraná.'},
+ {emo:'🚿',f:'Você abre o chuveiro para tomar banho.',c:'agua',x:'A água do rio é tratada e chega às casas pela torneira e pelo chuveiro.'},
+ {emo:'🎣',f:'O pescador leva peixe para o almoço da família.',c:'alimento',x:'Os rios têm peixes, que viram alimento.'},
+ {emo:'🌾',f:'A plantação de arroz recebe água do rio.',c:'alimento',x:'A água do rio irriga as plantações de arroz, frutas e verduras. Sem água, sem comida.'},
+ {emo:'⛴️',f:'Uma balsa leva pessoas e carros para o outro lado.',c:'transporte',x:'Barcos e balsas levam pessoas e cargas, principalmente onde há poucas estradas, como na Amazônia.'},
+ {emo:'📸',f:'Turistas do mundo todo visitam as Cataratas do Iguaçu.',c:'lazer',x:'Passeios, banho de rio, pesca esportiva e paisagens bonitas: o rio também é lazer e turismo.'},
+ {emo:'🐦',f:'Garças, capivaras e peixes vivem perto da água.',c:'natureza',x:'O rio é a casa de muitos animais e ajuda a manter a vegetação em volta.'},
+ {emo:'⚙️',f:'A fábrica usa água para produzir e para esfriar as máquinas.',c:'industria',x:'As indústrias usam muita água. Por isso muitas fábricas ficam perto de rios.'}
+];
+
+/* ---------- PARADA 4 · SALVE O RIO ---------- */
+var P4=[
+ {id:'lixo',emo:'🗑️',tit:'Lixo no rio',causa:'Sacolas, garrafas e embalagens jogadas na rua são levadas pela chuva até o rio.',o:['Jogar o lixo na lixeira e separar para a coleta seletiva.','Empurrar o lixo para o fundo do rio.','Esperar a chuva levar o lixo embora.'],ok:'Lixo no lixo, e separado!',x:'O lixo deixa a água suja, machuca os animais e pode entupir o rio.'},
+ {id:'esgoto',emo:'🚽',tit:'Esgoto sem tratamento',causa:'O esgoto das casas e das fábricas está caindo direto no rio.',o:['Tratar o esgoto antes de devolver ao rio, e não jogar óleo na pia.','Jogar o óleo de cozinha na pia.','Colocar mais canos jogando esgoto no rio.'],ok:'Esgoto tratado!',x:'Esgoto sem tratamento polui a água e espalha doenças.'},
+ {id:'margem',emo:'🌳',tit:'Margem sem árvores',causa:'Cortaram as árvores da beira do rio.',o:['Replantar árvores na margem: a mata ciliar.','Cortar as árvores que sobraram.','Construir casas bem na beira do rio.'],ok:'A mata ciliar voltou!',x:'Sem a <b>mata ciliar</b>, a terra cai no rio (é o <b>assoreamento</b>), ele fica raso e pode haver enchentes. As raízes das árvores seguram a terra.'},
+ {id:'agro',emo:'🌾',tit:'Veneno da plantação',causa:'Agrotóxicos usados em excesso escorrem da plantação para o rio.',o:['Usar uma agricultura mais sustentável, com menos veneno.','Usar o dobro de veneno na plantação.','Lavar as embalagens de veneno no rio.'],ok:'Plantação sustentável!',x:'O veneno que escorre prejudica os peixes e os outros seres vivos do rio.'},
+ {id:'agua',emo:'🚰',tit:'Torneira pingando',causa:'Torneira aberta, vazamentos e banhos muito longos desperdiçam água.',o:['Fechar a torneira e consertar o vazamento.','Lavar a calçada com a mangueira todo dia.','Tomar banhos bem demorados.'],ok:'Sem desperdício!',x:'Água desperdiçada é menos água para todos. Cada gota conta.'}
+];
+var HOTS=[['lixo',282,300],['esgoto',520,200],['margem',690,445],['agro',885,122],['agua',448,412]];
+function peixe(x,y,c,n){return '<g id="peixe'+n+'" style="display:none"><ellipse cx="'+x+'" cy="'+y+'" rx="18" ry="9" fill="'+c+'"/><polygon points="'+(x-16)+','+y+' '+(x-30)+','+(y-9)+' '+(x-30)+','+(y+9)+'" fill="'+c+'"/><circle cx="'+(x+9)+'" cy="'+(y-2)+'" r="2.4" fill="#2A3081"/></g>';}
+function arvore(x,y){return '<rect x="'+(x-4)+'" y="'+(y-6)+'" width="8" height="26" fill="#8B5E3C"/><circle cx="'+x+'" cy="'+(y-16)+'" r="20" fill="#2F9E44"/><circle cx="'+(x-12)+'" cy="'+(y-6)+'" r="13" fill="#37B24D"/>';}
+function lixeira(x,c){return '<rect x="'+x+'" y="394" width="24" height="36" rx="3" fill="'+c+'"/><rect x="'+(x-2)+'" y="389" width="28" height="7" rx="2" fill="'+c+'"/>';}
+function svg4(){var s='<svg viewBox="0 0 1000 520">'+
+ '<rect width="1000" height="170" fill="#BFE3FF"/><circle cx="70" cy="60" r="32" fill="#FFD43B"/>'+
+ '<g fill="#fff"><ellipse cx="250" cy="55" rx="46" ry="16"/><ellipse cx="280" cy="45" rx="30" ry="14"/><ellipse cx="650" cy="70" rx="40" ry="14"/></g>'+
+ '<rect y="150" width="1000" height="100" fill="#9BD37A"/>'+
+ '<g fill="#2F9E44">';
+ for(var r=0;r<3;r++)for(var c=0;c<9;c++)s+='<circle cx="'+(808+c*21)+'" cy="'+(166+r*20)+'" r="7"/>';
+ s+='</g><g class="s-agro"><rect x="955" y="168" width="22" height="30" rx="3" fill="#7048E8"/><path d="M880,212 C876,222 884,228 880,240" stroke="#9C36B5" stroke-width="7" fill="none"/></g>'+
+ '<g class="l-agro" style="display:none"><circle cx="829" cy="176" r="5" fill="#FA5252"/><circle cx="892" cy="196" r="5" fill="#FAB005"/><circle cx="955" cy="176" r="5" fill="#FA5252"/><circle cx="934" cy="206" r="5" fill="#FAB005"/></g>'+
+ '<g class="l-esgoto" style="display:none"><rect x="372" y="150" width="112" height="34" rx="5" fill="#E9ECEF" stroke="#868E96" stroke-width="2"/><text x="428" y="173" font-size="15" font-weight="bold" text-anchor="middle" fill="#495057" font-family="Trebuchet MS, Verdana, sans-serif">TRATAMENTO</text></g>'+
+ '<rect x="415" y="182" width="26" height="52" fill="#868E96"/><rect x="411" y="226" width="34" height="9" fill="#5C636A"/>'+
+ '<path id="rio4" d="M0,232 C200,218 400,246 600,230 S900,222 1000,236 L1000,338 C800,350 600,326 400,342 S100,330 0,340 Z" fill="#8C6D46"/>'+
+ '<g class="s-esgoto"><path d="M428,235 L428,252" stroke="#5C4033" stroke-width="10"/><ellipse cx="432" cy="262" rx="44" ry="12" fill="#4A3426" opacity=".8"/></g>'+
+ '<g class="l-esgoto" style="display:none"><path d="M428,235 L428,250" stroke="#A5D8FF" stroke-width="8"/></g>'+
+ '<g class="s-agro"><ellipse cx="880" cy="258" rx="48" ry="11" fill="#9C36B5" opacity=".55"/></g>'+
+ '<g class="s-margem"><ellipse cx="690" cy="322" rx="78" ry="13" fill="#C2A878"/></g>'+
+ '<g class="s-lixo"><rect x="132" y="268" width="38" height="15" rx="6" fill="#E03131" transform="rotate(-12 151 275)"/><rect x="164" y="263" width="10" height="7" fill="#fff" transform="rotate(-12 151 275)"/><ellipse cx="205" cy="292" rx="22" ry="11" fill="#F8F9FA" stroke="#ADB5BD" stroke-width="2"/><rect x="238" y="262" width="17" height="24" rx="3" fill="#ADB5BD"/></g>';
+ [[90,302,'#FF922B'],[330,262,'#FAB005'],[560,300,'#FF922B'],[790,270,'#FAB005'],[960,300,'#FF922B']].forEach(function(p,i){s+=peixe(p[0],p[1],p[2],i+1);});
+ s+='<path d="M0,340 C100,330 300,350 400,342 S800,350 1000,338 L1000,520 L0,520 Z" fill="#A9DB86"/>'+
+ '<g class="s-margem"><path d="M615,342 C650,360 730,360 770,342 L760,392 C720,400 650,400 620,392 Z" fill="#B08968"/><rect x="630" y="368" width="14" height="10" fill="#7F5539"/><rect x="684" y="378" width="14" height="10" fill="#7F5539"/><rect x="738" y="366" width="14" height="10" fill="#7F5539"/></g>'+
+ '<g class="l-margem" style="display:none">'+arvore(615,378)+arvore(665,392)+arvore(715,378)+arvore(765,392)+'</g>'+
+ '<g class="l-lixo" style="display:none">'+lixeira(62,'#1C7ED6')+lixeira(94,'#E03131')+lixeira(126,'#2F9E44')+lixeira(158,'#FAB005')+'</g>'+
+ '<polygon points="270,410 335,362 400,410" fill="#E8590C"/><rect x="282" y="408" width="106" height="72" fill="#FFE8CC"/><rect x="300" y="428" width="26" height="52" fill="#B08968"/><rect x="345" y="424" width="28" height="24" fill="#A5D8FF" stroke="#fff" stroke-width="3"/>'+
+ '<rect x="388" y="434" width="20" height="8" fill="#868E96"/><rect x="402" y="436" width="7" height="14" fill="#868E96"/>'+
+ '<g class="s-agua"><circle cx="405" cy="460" r="4" fill="#4DABF7"/><circle cx="405" cy="475" r="4" fill="#4DABF7"/><ellipse cx="405" cy="496" rx="22" ry="6" fill="#74C0FC"/></g>'+
+ '</svg>';return s;}
+function salve(F){
+ var feitos=0,ok={};
+ var h='<div class="pista">O rio está doente! Clique em cada <span class="exc">!</span> e escolha como cuidar.</div><div class="cena">'+svg4();
+ HOTS.forEach(function(p){h+='<button class="hot" data-id="'+p[0]+'" style="'+xy([p[1],p[2]])+'">!</button>';});
+ palco.innerHTML=h+'</div><div class="saude">Saúde do rio <span class="barra"><i id="barra" style="width:10%"></i></span><span id="pct">10%</span></div>';
+ cada('.hot',function(b){b.onclick=function(){if(!ok[b.getAttribute('data-id')])abre(b);};});
+ function abre(b){
+  var id=b.getAttribute('data-id'),P=F.itens.filter(function(q){return q.id===id;})[0],tent=0;
+  var ops=emb(P.o.map(function(t,i){return {t:t,v:i===0?'1':'0'};}));
+  var html='<div class="emoG">'+P.emo+'</div><div class="tit">'+P.tit+'</div><div class="sub">'+P.causa+'</div><div class="perg">Como cuidar do rio?</div><div class="ops-v">';
+  ops.forEach(function(o){html+='<button class="op esq" data-v="'+o.v+'">'+o.t+'</button>';});
+  festa(html+'</div>');
+  cada('.op',function(o){o.onclick=function(){if(o.disabled)return;
+   if(o.getAttribute('data-v')==='1'){var g=tent===0?2:tent===1?1:0;ganha(g);ok[id]=1;feitos++;var fim=feitos===HOTS.length;
+    festa('<div class="tit">✔ '+P.ok+'</div><div class="sub">'+P.x+'</div>'+ganhoTxt(g),fim?'VER O RIO LIMPINHO':'VOLTAR AO RIO',function(){aplica(id,b);if(fim)setTimeout(fimFase,1900);});}
+   else{tent++;o.disabled=true;o.classList.add('off');aviso('Isso ajuda ou piora o rio? Tente de novo.');}};},$('festa'));
+ }
+ function aplica(id,b){
+  cada('.s-'+id,function(e){e.style.display='none';});cada('.l-'+id,function(e){e.style.display='';});
+  b.classList.add('ok');b.textContent='✔';
+  var n=0;for(var q in ok)n++;var t=n/HOTS.length;
+  $('rio4').setAttribute('fill',mix('#8C6D46','#339AF0',t));
+  var pf=$('peixe'+n);if(pf)pf.style.display='';
+  var pc=Math.round(10+90*t);$('barra').style.width=pc+'%';$('pct').textContent=pc+'%';
+ }
+}
+
+/* ---------- PARADA 5 · VANTAGEM OU PROBLEMA ---------- */
+var MOD={barragem:['🧱','BARRAGEM (REPRESA)','Parede que segura a água e forma um lago. Exemplo: Itaipu, no Rio Paraná.'],
+ retificacao:['📏','RETIFICAÇÃO','O rio fica mais reto, sem curvas. Exemplo: Rio Tietê, em São Paulo.'],
+ canalizacao:['🛣️','CANALIZAÇÃO','O rio vai para dentro de um canal de concreto ou para baixo da rua.'],
+ aterro:['🏘️','OCUPAÇÃO DAS MARGENS','Casas e ruas construídas muito perto do rio.'],
+ poluicao:['🏭','POLUIÇÃO','Esgoto e resíduos jogados no rio. Exemplo: Rio Pinheiros, em São Paulo.']};
+var P5=[
+ {m:'barragem',f:'Gera energia elétrica para as cidades.',c:'v',x:'A água da represa passa pelas turbinas e gera energia.'},
+ {m:'barragem',f:'Inunda terras e muda o caminho dos peixes.',c:'p',x:'O lago cobre matas e terras, e os peixes não conseguem mais subir o rio.'},
+ {m:'barragem',f:'Guarda água para usar na época de seca.',c:'v',x:'O lago da represa funciona como uma caixa-d\'água gigante.'},
+ {m:'retificacao',f:'Facilita fazer obras e usar o terreno em volta.',c:'v',x:'Sem curvas, fica mais fácil construir perto do rio.'},
+ {m:'retificacao',f:'A água corre mais rápido e as enchentes podem aumentar.',c:'p',x:'Sem as curvas para frear, a água desce com mais força.'},
+ {m:'canalizacao',f:'Ganha espaço para ruas e construções.',c:'v',x:'Com o rio no canal ou embaixo da avenida, sobra espaço em cima.'},
+ {m:'canalizacao',f:'O chão vira concreto, a água da chuva não entra na terra e o rio perde a vida.',c:'p',x:'O solo fica impermeável e o rio vira um cano: sem plantas e sem bichos.'},
+ {m:'aterro',f:'Mais espaço para as pessoas morarem.',c:'v',x:'Mais terreno para casas e ruas.'},
+ {m:'aterro',f:'Risco de enchente e perda da mata ciliar.',c:'p',x:'Quem mora na beira do rio corre risco quando ele enche, e as árvores da margem somem.'},
+ {m:'poluicao',f:'Os peixes morrem e a água fica imprópria para usar.',c:'p',x:'A poluição é a única mudança <b>sem nenhuma vantagem</b>. Só traz problema.'}
+];
+
+/* ---------- PARADA 6 · DETETIVE DA IA ---------- */
+var P6=[
+ {q:'Qual é um rio perene do Brasil?',r:'O Rio Amazonas: ele tem água o ano todo.',c:'certo',x:'📖 Conferido no livro: o Amazonas é perene, tem água o ano inteiro.'},
+ {q:'O que é um rio intermitente?',r:'É um rio que tem água o ano inteiro, sem parar.',c:'errou',x:'📖 No livro: o intermitente <b>seca em algumas épocas</b> e volta com as chuvas. Quem tem água o ano todo é o perene.'},
+ {q:'O que é a nascente de um rio?',r:'É o lugar onde o rio termina, quando chega ao mar.',c:'errou',x:'📖 No livro: a nascente é onde o rio <b>começa</b>. Onde ele termina é a foz.'},
+ {q:'Em qual rio fica a Usina de Itaipu?',r:'No Rio Paraná.',c:'certo',x:'📖 Conferido no livro: Itaipu fica no Rio Paraná.'},
+ {q:'As Cataratas do Iguaçu ficam em que tipo de rio?',r:'Num rio de planície, bem plano e calmo.',c:'errou',x:'📖 No livro: o Iguaçu é rio <b>de planalto</b>, com terreno inclinado e quedas-d\'água.'},
+ {q:'O que é mata ciliar?',r:'É a vegetação que protege as margens do rio.',c:'certo',x:'📖 Conferido no livro: mata ciliar é a vegetação da beira do rio.'},
+ {q:'O Rio Negro é afluente de qual rio?',r:'Do Rio Amazonas.',c:'certo',x:'📖 Conferido no livro: o Rio Negro é afluente do Amazonas.'},
+ {q:'Posso jogar óleo de cozinha na pia?',r:'Pode, o óleo não faz mal nenhum ao rio.',c:'errou',x:'📖 No livro: <b>não jogue óleo na pia</b>. Ele vai para o esgoto e polui o rio.'},
+ {q:'Deixar o rio reto, sem curvas, acaba com as enchentes?',r:'Sim, rio reto nunca tem enchente.',c:'errou',x:'📖 No livro: no rio retificado a água corre mais rápido e <b>as enchentes podem aumentar</b>.'},
+ {q:'Qual tipo de rio é bom para navegar?',r:'O rio de planície, porque a água é mais calma.',c:'certo',x:'📖 Conferido no livro: rio de planície é plano e calmo, bom para navegar.'}
+];
+var LIVRO='<div class="livroCx"><h2>📖 O livro dos rios</h2><div class="cols">'+
+ '<div><h3>🗺️ Partes do rio</h3><ul><li><b>Nascente:</b> onde o rio começa.</li><li><b>Curso:</b> o caminho do rio.</li><li><b>Afluente:</b> rio menor que deságua num maior. O Rio Negro é afluente do Amazonas.</li><li><b>Foz:</b> onde o rio termina.</li></ul></div>'+
+ '<div><h3>💦 Tipos de rio</h3><ul><li><b>Perene:</b> tem água o ano todo (Amazonas, Paraná).</li><li><b>Intermitente:</b> seca em algumas épocas do ano (Sertão do Nordeste).</li><li><b>Planalto:</b> terreno alto, quedas-d\'água, bom para energia (Iguaçu).</li><li><b>Planície:</b> terreno plano e calmo, bom para navegar (Amazonas).</li></ul></div>'+
+ '<div><h3>🏙️ Para que serve</h3><ul><li>Água, alimento, transporte, lazer, natureza e indústria.</li><li><b>Energia:</b> a Usina de Itaipu fica no Rio Paraná.</li><li><b>Turismo:</b> as Cataratas do Iguaçu.</li></ul></div>'+
+ '<div><h3>🌳 Cuidados e mudanças</h3><ul><li><b>Mata ciliar:</b> vegetação que protege as margens.</li><li>Não jogar óleo na pia nem lixo na rua.</li><li><b>Retificação:</b> a água corre mais rápido e as enchentes podem aumentar.</li></ul></div>'+
+ '</div></div><button class="bt verde" id="fechaLivro">VOLTAR À PERGUNTA</button>';
+function abreLivro(){var l=$('livro');l.innerHTML=LIVRO;l.style.display='flex';l.scrollTop=0;$('fechaLivro').onclick=function(){l.style.display='none';};}
+
+/* ---------- AS SEIS PARADAS ---------- */
+var FASES=[
+ {nome:'Partes do rio',parada:'Nascente',emo:'⛰️',perg:'Por onde o rio passa, do começo ao fim?',
+  resp:'O rio começa na <b>nascente</b>, percorre o seu <b>curso</b>, recebe os <b>afluentes</b> e termina na <b>foz</b>. Tudo isso junto forma a <b>bacia hidrográfica</b>.',
+  como:'Leia a pista e clique no número certo do mapa.',jogar:partes,itens:P1},
+ {nome:'Tipos de rio',parada:'Corredeira',emo:'💦',perg:'Todos os rios têm água o ano todo?',
+  resp:'Não! O rio <b>perene</b> tem água o ano inteiro, mas o <b>intermitente</b> seca em algumas épocas. E pelo relevo, há rio <b>de planalto</b> (com quedas-d\'água) e rio <b>de planície</b> (calmo, bom para navegar).',
+  como:'Leia sobre cada rio e escolha o tipo certo. Olhe as figuras dos botões!',jogar:escolha,itens:P2,
+  ordem:function(){return emb(P2.filter(function(i){return i.g==='agua';})).concat(emb(P2.filter(function(i){return i.g==='relevo';})));},
+  cartao:function(it){return '<div class="tag">'+(it.g==='agua'?'PELA ÁGUA AO LONGO DO ANO':'PELO RELEVO (O TERRENO)')+'</div><div class="emo">'+it.emo+'</div><div class="frase">'+it.f+'</div>';},
+  opcoes:function(it){return (it.g==='agua'?['perene','intermitente']:['planalto','planicie']).map(function(t){return {v:t,html:ICO[t]+'RIO '+NT[t]};});},
+  titOk:function(it){return 'É rio '+NT[it.c]+'!';},dica:function(){return 'Pense de novo. Olhe a figura de cada botão.';}},
+ {nome:'Para que serve o rio?',parada:'Cidade',emo:'🏙️',perg:'O que aconteceria com a cidade se o rio secasse?',
+  resp:'Faltaria água na torneira, comida, energia, transporte e lazer. <b>A cidade depende do rio</b>, por isso precisamos cuidar dele.',
+  como:'Leia a situação e descubra como o rio está ajudando.',jogar:escolha,itens:P3,grade:'grade4',
+  ordem:function(){return emb(P3);},
+  cartao:function(it){return '<div class="emo">'+it.emo+'</div><div class="frase">'+it.f+'</div><div class="desc">Como o rio está ajudando aqui?</div>';},
+  opcoes:function(){return USOS.map(function(u){return {v:u[0],html:'<span class="oe">'+u[1]+'</span>'+u[2]};});},
+  titOk:function(it){var u=USOS.filter(function(x){return x[0]===it.c;})[0];return u[1]+' '+u[2]+'!';},dica:function(){return 'Pense de novo: o que o rio está dando nessa situação?';}},
+ {nome:'Salve o rio',parada:'Margem',emo:'🌳',perg:'O que eu posso fazer para proteger um rio?',
+  resp:'Jogar o lixo na lixeira, não jogar óleo na pia, plantar árvores na margem e <b>não desperdiçar água</b>. Cuidar do rio começa em casa.',
+  como:'O rio está doente! Clique em cada ponto de exclamação e escolha como cuidar dele.',jogar:salve,itens:P4},
+ {nome:'Vantagem ou problema?',parada:'Represa',emo:'🧱',perg:'Mudar o rio traz só vantagens?',
+  resp:'Não. <b>Toda mudança tem vantagens e problemas.</b> E a poluição não tem vantagem nenhuma.',
+  como:'As pessoas mudaram o rio. Diga se cada frase é uma vantagem ou um problema.',jogar:escolha,itens:P5,
+  ordem:function(){var o=[];['barragem','retificacao','canalizacao','aterro','poluicao'].forEach(function(m){o=o.concat(emb(P5.filter(function(i){return i.m===m;})));});return o;},
+  cartao:function(it){var M=MOD[it.m];return '<div class="tag">'+M[1]+'</div><div class="emo">'+M[0]+'</div><div class="desc">'+M[2]+'</div><div class="frase">“'+it.f+'”</div>';},
+  opcoes:function(){return [{v:'v',cls:'sim',html:'👍 VANTAGEM'},{v:'p',cls:'nao',html:'⚠️ PROBLEMA'}];},
+  titOk:function(it){return it.c==='v'?'👍 É VANTAGEM!':'⚠️ É PROBLEMA!';},dica:function(){return 'Pense de novo: isso ajuda as pessoas ou causa um estrago?';}},
+ {nome:'Detetive da IA',parada:'Foz',emo:'🤖',perg:'Como a tecnologia ajuda a estudar e cuidar dos rios?',
+  resp:'A tecnologia ajuda a pesquisar, organizar dados e fazer mapas. Mas <b>a IA pode errar</b>, mesmo parecendo ter certeza. Um bom pesquisador sempre confere numa fonte confiável.',
+  como:'A IA respondeu umas perguntas sobre rios, mas ela pode errar! Leia, consulte o livro 📖 se precisar e diga se a IA acertou ou errou.',jogar:escolha,itens:P6,livro:true,
+  ordem:function(){return emb(P6);},
+  cartao:function(it){return '<div class="chat"><div class="msg eu"><span class="av">🧑</span><p><small>Pergunta</small>'+it.q+'</p></div><div class="msg ia"><span class="av">🤖</span><p><small>A IA respondeu</small>'+it.r+'</p></div></div>';},
+  opcoes:function(){return [{v:'certo',cls:'sim',html:'✔ A IA ACERTOU'},{v:'errou',cls:'nao',html:'✘ A IA ERROU'}];},
+  titOk:function(it){return it.c==='certo'?'✔ A IA acertou!':'🕵️ Você pegou o erro da IA!';},dica:function(){return 'Confira no livro 📖 antes de responder.';}}
+];
+FASES.forEach(function(F){F.max=F.itens.length*2;});
+
+/* ---------- MAPA ---------- */
+var ESTS=[[110,96],[310,190],[545,108],[780,205],[560,352],[870,448]];
+function caminho(p){var d='M'+p[0][0]+','+p[0][1];for(var i=0;i<p.length-1;i++){var a=p[i-1]||p[i],b=p[i],c=p[i+1],e=p[i+2]||c;
+ d+=' C'+(b[0]+(c[0]-a[0])/6).toFixed(1)+','+(b[1]+(c[1]-a[1])/6).toFixed(1)+' '+(c[0]-(e[0]-b[0])/6).toFixed(1)+','+(c[1]-(e[1]-b[1])/6).toFixed(1)+' '+c[0]+','+c[1];}return d;}
+function svgMapa(){var d=caminho(ESTS.concat([[985,500]]));
+ return '<svg viewBox="0 0 1000 520"><rect width="1000" height="520" fill="#BDE5A8"/>'+
+ '<path d="M740,520 C820,470 900,420 1000,350 L1000,520 Z" fill="#4DABF7"/><text x="958" y="438" fill="#fff" font-size="24" font-weight="bold" text-anchor="middle" font-family="Trebuchet MS, Verdana, sans-serif">MAR</text>'+
+ '<polygon points="0,250 0,120 60,40 110,10 170,60 230,0 0,0" fill="#A88B6E"/><polygon points="60,40 110,10 170,60 150,72 120,52 90,66" fill="#fff" opacity=".85"/>'+
+ '<g fill="#ADB5BD"><rect x="600" y="40" width="34" height="62"/><rect x="640" y="62" width="26" height="40"/><rect x="672" y="30" width="30" height="72"/><rect x="476" y="56" width="26" height="40"/></g>'+
+ '<g fill="#fff" opacity=".7"><rect x="606" y="48" width="8" height="8"/><rect x="620" y="48" width="8" height="8"/><rect x="606" y="64" width="8" height="8"/><rect x="678" y="40" width="8" height="8"/><rect x="690" y="56" width="8" height="8"/></g>'+
+ '<ellipse cx="520" cy="352" rx="70" ry="30" fill="#74C0FC"/><rect x="590" y="326" width="14" height="56" rx="3" fill="#868E96"/>'+
+ '<g fill="#2F9E44"><circle cx="840" cy="170" r="18"/><circle cx="870" cy="190" r="15"/><circle cx="720" cy="250" r="17"/><circle cx="745" cy="268" r="13"/><circle cx="260" cy="300" r="17"/><circle cx="230" cy="320" r="13"/><circle cx="420" cy="440" r="16"/><circle cx="140" cy="430" r="18"/><circle cx="360" cy="100" r="15"/></g>'+
+ '<path d="'+d+'" stroke="#1971C2" stroke-width="26" fill="none" stroke-linecap="round"/><path d="'+d+'" stroke="#74C0FC" stroke-width="14" fill="none" stroke-linecap="round"/></svg>';}
+function mapa(anim){
+ chip('Parada '+(ATUAL+1)+' de 6');
+ var h='<div class="pista">'+(ATUAL===0?'Clique na parada <b>1</b> para começar a viagem!':'Muito bem, '+esc(NOME.split(' ')[0])+'! Agora é a parada <b>'+(ATUAL+1)+'</b>.')+'</div><div class="cena">'+svgMapa();
+ ESTS.forEach(function(p,i){var F=FASES[i],cls=i<ATUAL?'feito':i===ATUAL?'atual':'bloq';
+  h+='<button class="est '+cls+'" style="'+xy(p)+'"'+(i===ATUAL?'':' disabled')+'>'+(i<ATUAL?'✔':F.emo)+'</button>';
+  h+='<div class="rotulo '+cls+'" style="left:'+(p[0]/10)+'%;top:calc('+(p[1]/5.2)+'% + 5vh)">'+(i+1)+' · '+F.parada.toUpperCase()+(i<ATUAL?' · ⭐ '+PTS[i]:'')+'</div>';});
+ var b0=anim&&ATUAL>0?ESTS[ATUAL-1]:ESTS[ATUAL];
+ palco.innerHTML=h+'<div class="barco" id="barco" style="'+xy(b0)+'">🛶</div></div>';
+ palco.querySelector('.est.atual').onclick=function(){introFase(ATUAL);};
+ if(anim&&ATUAL>0)setTimeout(function(){var b=$('barco'),p=ESTS[ATUAL];if(b){b.style.left=(p[0]/10)+'%';b.style.top=(p[1]/5.2)+'%';}},120);
+}
+function introFase(i){var F=FASES[i];chip('Parada '+(i+1)+' · '+F.nome);
+ festa('<div class="emoG">'+F.emo+'</div><div class="kick">PARADA '+(i+1)+' DE 6 · '+F.parada.toUpperCase()+'</div><div class="tit">'+F.nome+'</div><div class="perg">🤔 '+F.perg+'</div><div class="sub">'+F.como+'</div>','COMEÇAR',function(){F.jogar(F);},'azul');}
+function fimFase(){var F=FASES[ATUAL];
+ festa('<div class="kick">PARADA '+(ATUAL+1)+' CONCLUÍDA</div><div class="perg">🤔 '+F.perg+'</div><div class="sub">'+F.resp+'</div><div class="tot">⭐ '+PTS[ATUAL]+' de '+F.max+'</div>',ATUAL<FASES.length-1?'🛶 SEGUIR VIAGEM':'🏅 VER MEU CERTIFICADO',function(){ATUAL++;if(ATUAL>=FASES.length)final();else mapa(true);});}
+
+/* ---------- CERTIFICADO ---------- */
+function final(){chip('Missão cumprida!');
+ var max=0;FASES.forEach(function(F){max+=F.max;});var pc=EST/max,med=pc>=.8?['🥇','OURO']:pc>=.55?['🥈','PRATA']:['🥉','BRONZE'];
+ var h='<div class="cert"><div class="emoG">'+med[0]+'</div><div class="kick">CERTIFICADO · NÍVEL '+med[1]+'</div><div class="titCert">MISSÃO CUMPRIDA!</div><div class="nomeC">'+esc(NOME)+'</div>'+
+  '<div class="sub">levou o barquinho da nascente até a foz e agora faz parte da <b>Equipe Guardiões do Rio</b>, com <b>⭐ '+EST+'</b> de '+max+' estrelas.</div><div class="tab">';
+ FASES.forEach(function(F,i){h+='<div><span>'+F.emo+' '+F.nome+'</span><b>⭐ '+PTS[i]+'/'+F.max+'</b></div>';});
+ palco.innerHTML=h+'</div><div class="data">Geografia + Computação · '+new Date().toLocaleDateString('pt-BR')+'</div></div><button class="bt verde" id="denovo">JOGAR DE NOVO</button>';
+ $('denovo').onclick=inicio;}
+
+/* ---------- CAPA ---------- */
+function inicio(){ATUAL=0;EST=0;PTS=[0,0,0,0,0,0];$('cE').textContent='⭐ 0';chip('Geografia + Computação');fecha();$('livro').style.display='none';
+ palco.innerHTML='<div class="capa"><div class="emoG">🛶</div><div class="titCapa">MISSÃO RIO</div><div class="selo">GEOGRAFIA + COMPUTAÇÃO</div>'+
+  '<div class="sub">Leve o barquinho da <b>nascente</b> até a <b>foz</b>. São 6 paradas, e em cada uma tem um desafio sobre os rios.</div>'+
+  '<input id="nome" maxlength="30" autocomplete="off" placeholder="Digite seu nome" value="'+esc(NOME)+'"><button class="bt verde" id="go">COMEÇAR A MISSÃO</button></div>';
+ var go=function(){var n=$('nome').value.trim();if(n.length<2){aviso('Escreva o seu nome. Ele vai aparecer no certificado!');$('nome').focus();return;}NOME=n;mapa(false);};
+ $('go').onclick=go;$('nome').onkeydown=function(e){if(e.key==='Enter')go();};$('nome').focus();}
+
+window.__t={get ATUAL(){return ATUAL;},get EST(){return EST;},get PTS(){return PTS;},FASES:FASES};
+inicio();
+})();</script></body></html>
