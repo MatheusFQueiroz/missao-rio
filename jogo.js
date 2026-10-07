@@ -12,7 +12,7 @@ function pega(a,i){return a.filter(function(x){return x[0]===i;})[0];}
 
 /* ---------------- estado ---------------- */
 var CHAVE='missao-rio-expedicao';
-var est={feitas:[],som:false,anim:!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches),livre:false,turma:false,nome:'',diario:{}};
+var est={feitas:[],som:false,anim:!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches),livre:false,turma:false,nome:''};
 try{var s=JSON.parse(localStorage.getItem(CHAVE)||'null');if(s)Object.keys(s).forEach(function(k){est[k]=s[k];});}catch(e){}
 function salva(){try{localStorage.setItem(CHAVE,JSON.stringify(est));}catch(e){}}
 function aplicaAjustes(){document.body.classList.toggle('sem-animacao',!est.anim);document.body.classList.toggle('turma',!!est.turma);}
@@ -43,7 +43,7 @@ function capi(cls){return '<svg class="capi '+(cls||'')+'" viewBox="0 0 120 110"
 function balaoCapi(titulo,texto,cls){return '<div class="fala">'+capi(cls)+'<div class="balao">'+(titulo?'<b>'+titulo+'</b>':'')+texto+'</div></div>';}
 
 /* ======================================================================
-   CADERNO DE CAMPO (informações da planilha Rios_Geografia_Computacao_IA)
+   CADERNO DE CAMPO (informações, exemplos, ilustrações e fontes)
    ====================================================================== */
 var CAD={
  visao:{tit:'Visão geral',ic:'compass-one',intro:'Nossa expedição estuda os rios em cinco temas. Cada tema tem uma pergunta-guia: é ela que você vai responder jogando.',
@@ -87,7 +87,8 @@ var CAD={
    ['Canalização','O rio vai para dentro de um canal de concreto ou para baixo da rua.','Ganha espaço para ruas e construções.','O chão vira concreto, a chuva não entra na terra e o rio perde a vida.','Córregos canalizados nas cidades.','road-sign',C.terra],
    ['Ocupação das margens','Casas e ruas construídas muito perto do rio.','Mais espaço para as pessoas morarem.','Risco de enchente e perda da mata ciliar.','Bairros na beira de rios.','home',C.sol],
    ['Poluição','Esgoto e resíduos jogados no rio.','Nenhuma.','Os peixes morrem e a água fica imprópria para usar.','Rio Pinheiros, em São Paulo.','factory-building',C.coral]]},
- atividade:{tit:'Computação e IA',ic:'robot-one',intro:'A atividade de computação tem 7 etapas. No Diário de bordo você preenche o seu registro de cada uma.',
+ fontes:{tit:'Fontes',ic:'link',intro:'De onde vieram as informações deste caderno. Um bom pesquisador sempre diz a fonte e confere em mais de um lugar, de preferência com a professora.',itens:[]},
+ atividade:{tit:'Computação e IA',ic:'robot-one',intro:'A atividade de computação tem 7 etapas. Anote no seu caderno o que você fez em cada uma: é o seu diário de bordo.',
   itens:[
    ['Pesquisar','Procurar informações sobre um rio da sua região em sites, livros e com a família.','Buscador na internet','Pesquisei o Rio Paraná no site da prefeitura e numa enciclopédia.','search'],
    ['Conferir','Ver se a informação aparece igual em duas fontes confiáveis.','Sites oficiais, livros, professora','Conferi em dois lugares que a Usina de Itaipu fica no Rio Paraná.','check-one'],
@@ -97,16 +98,39 @@ var CAD={
    ['Pedir ajuda à IA','Escrever um bom pedido (prompt): dizer quem você é, o que quer e como quer. Depois conferir a resposta.','Assistente de IA, com a professora','Pedi: "Explique para uma criança de 9 anos o que é mata ciliar, em 3 frases." E conferi no livro.','robot-one'],
    ['Apresentar','Mostrar para a turma o que você descobriu.','Cartaz, slides ou vídeo','Apresentei meu cartaz sobre o Rio Paraná com o mapa e o gráfico.','projector']]}
 };
-var ORDEM_ABAS=['visao','tipos','importancia','preservacao','acao','atividade'];
+var FONTES={
+ ana:{n:'Agência Nacional de Águas e Saneamento Básico (ANA)',u:'https://www.gov.br/ana/pt-br',o:'Dados sobre rios, bacias e uso da água no Brasil.'},
+ ibge:{n:'IBGE Educa',u:'https://educa.ibge.gov.br/',o:'Geografia do Brasil explicada para estudantes.'},
+ itaipu:{n:'Itaipu Binacional',u:'https://www.itaipu.gov.br/',o:'A usina hidrelétrica do Rio Paraná.'},
+ icmbio:{n:'ICMBio: Parques Nacionais do Iguaçu e da Serra da Canastra',u:'https://www.gov.br/icmbio/pt-br',o:'Cataratas do Iguaçu e nascente do Rio São Francisco.'},
+ embrapa:{n:'Embrapa',u:'https://www.embrapa.br/',o:'Mata ciliar, solo, agricultura e água.'},
+ mma:{n:'Ministério do Meio Ambiente e Mudança do Clima',u:'https://www.gov.br/mma/pt-br',o:'Preservação dos rios e saneamento.'},
+ sabesp:{n:'Sabesp',u:'https://www.sabesp.com.br/',o:'Tratamento de água e esgoto; rios Tietê e Pinheiros.'},
+ sgb:{n:'Serviço Geológico do Brasil (SGB)',u:'https://www.sgb.gov.br/',o:'Relevo, planaltos e planícies.'},
+ mec:{n:'MEC: Computação na Educação Básica (BNCC)',u:'https://www.gov.br/mec/pt-br',o:'Pesquisa, dados, pensamento computacional e uso responsável da tecnologia.'}
+};
+/* ilustração e fonte de cada ficha, pelo título */
+var FICHA={
+ 'Rio perene':['perene','ana'],'Rio intermitente':['intermitente','ana'],'Rio de planalto':['planalto','sgb'],'Rio de planície':['planicie','sgb'],
+ 'Nascente':['nascente','icmbio'],'Curso':['curso','ibge'],'Afluente':['afluente','ibge'],'Foz':['foz','ibge'],'Bacia hidrográfica':['bacia','ana'],
+ 'Água para beber e higiene':['agua','sabesp'],'Alimento':['alimento','embrapa'],'Energia elétrica':['energia','itaipu'],'Transporte':['transporte','ibge'],'Lazer e turismo':['lazer','icmbio'],'Natureza e animais':['natureza','mma'],'Indústria':['industria','ana'],
+ 'Lixo no rio':['lixo','mma'],'Esgoto sem tratamento':['esgoto','sabesp'],'Falta de mata ciliar':['margem','embrapa'],'Agrotóxicos':['agro','embrapa'],'Desperdício de água':['desperdicio','ana'],
+ 'Barragem (represa)':['barragem','itaipu'],'Retificação':['retificacao','sabesp'],'Canalização':['canalizacao','mma'],'Ocupação das margens':['aterro','mma'],'Poluição':['poluicao','sabesp'],
+ 'Pesquisar':['pesquisa','mec'],'Conferir':['pesquisa','mec'],'Organizar dados':['tabela','mec'],'Criar gráfico':['grafico','mec'],'Mapa':['mapa','mec'],'Pedir ajuda à IA':['ia','mec'],'Apresentar':['apresentar','mec']
+};
+function ilu(t){var f=FICHA[t];return f&&ILU[f[0]]?ILU[f[0]]():'';}
+function fonte(t){var f=FICHA[t];if(!f)return '';var F=FONTES[f[1]];return '<div class="fonte">'+icone('link',C.ceu)+'<span>Fonte: <a href="'+F.u+'" target="_blank" rel="noopener">'+F.n+'</a></span></div>';}
+var ORDEM_ABAS=['visao','tipos','importancia','preservacao','acao','atividade','fontes'];
 
 function paginaCaderno(aba){
  var a=CAD[aba],h='<div class="pagina"><h2>'+icone(a.ic,C.rio)+a.tit+'</h2><p class="intro">'+a.intro+'</p>';
  if(aba==='visao'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item"><div class="cab">'+icone(i[3],C.ceu)+'<b>'+i[0]+'</b></div><div class="guia">'+icone('thinking-problem',C.sol)+i[1]+'</div><div class="palavras">'+i[2].map(function(p){return '<span>'+p+'</span>';}).join('')+'</div></div>';}).join('')+'</div>';}
- else if(aba==='tipos'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item"><div class="cab">'+icone(i[4],i[5])+'<div><small>'+i[1]+'</small><b>'+i[0]+'</b></div></div><p>'+i[2]+'</p><div class="ex"><b>Exemplo:</b> '+i[3]+'</div></div>';}).join('')+'</div>';}
- else if(aba==='importancia'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item"><div class="cab">'+icone(i[3],i[4])+'<b>'+i[0]+'</b></div><p>'+i[1]+'</p><div class="ex"><b>Exemplo:</b> '+i[2]+'</div></div>';}).join('')+'</div>';}
- else if(aba==='preservacao'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item"><div class="cab">'+icone(i[4],i[5])+'<b>'+i[0]+'</b></div><p><span class="lbl">Causa:</span> '+i[1]+'</p><p><span class="lbl">Efeito:</span> '+i[2]+'</p><div class="ex"><b>Como cuidar:</b> '+i[3]+'</div></div>';}).join('')+'</div>';}
- else if(aba==='acao'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item"><div class="cab">'+icone(i[5],i[6])+'<b>'+i[0]+'</b></div><p>'+i[1]+'</p><div class="vp"><div class="v"><span class="lbl">Vantagem</span>'+i[2]+'</div><div class="p"><span class="lbl">Problema</span>'+i[3]+'</div></div><div class="ex"><b>Exemplo:</b> '+i[4]+'</div></div>';}).join('')+'</div>';}
- else {h+='<div class="etapas">'+a.itens.map(function(i,n){return '<div class="etapa"><div class="n">'+(n+1)+'</div><div><b>'+i[0]+'</b><p>'+i[1]+'</p><p class="tec">Ferramenta: '+i[2]+'</p><p><span class="lbl">Exemplo de registro:</span> “'+i[3]+'”</p></div></div>';}).join('')+'</div>';}
+ else if(aba==='fontes'){h+='<div class="ficha">'+Object.keys(FONTES).map(function(k){var F=FONTES[k];return '<div class="ficha-item"><div class="cab">'+icone('link',C.ceu)+'<b>'+F.n+'</b></div><p>'+F.o+'</p><div class="ex"><a href="'+F.u+'" target="_blank" rel="noopener">'+F.u.replace(/^https?:\/\//,'')+'</a></div></div>';}).join('')+'</div>';}
+ else if(aba==='tipos'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item">'+ilu(i[0])+'<div class="cab">'+icone(i[4],i[5])+'<div><small>'+i[1]+'</small><b>'+i[0]+'</b></div></div><p>'+i[2]+'</p><div class="ex"><b>Exemplo:</b> '+i[3]+'</div>'+fonte(i[0])+'</div>';}).join('')+'</div>';}
+ else if(aba==='importancia'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item">'+ilu(i[0])+'<div class="cab">'+icone(i[3],i[4])+'<b>'+i[0]+'</b></div><p>'+i[1]+'</p><div class="ex"><b>Exemplo:</b> '+i[2]+'</div>'+fonte(i[0])+'</div>';}).join('')+'</div>';}
+ else if(aba==='preservacao'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item">'+ilu(i[0])+'<div class="cab">'+icone(i[4],i[5])+'<b>'+i[0]+'</b></div><p><span class="lbl">Causa:</span> '+i[1]+'</p><p><span class="lbl">Efeito:</span> '+i[2]+'</p><div class="ex"><b>Como cuidar:</b> '+i[3]+'</div>'+fonte(i[0])+'</div>';}).join('')+'</div>';}
+ else if(aba==='acao'){h+='<div class="ficha">'+a.itens.map(function(i){return '<div class="ficha-item">'+ilu(i[0])+'<div class="cab">'+icone(i[5],i[6])+'<b>'+i[0]+'</b></div><p>'+i[1]+'</p><div class="vp"><div class="v"><span class="lbl">Vantagem</span>'+i[2]+'</div><div class="p"><span class="lbl">Problema</span>'+i[3]+'</div></div><div class="ex"><b>Exemplo:</b> '+i[4]+'</div>'+fonte(i[0])+'</div>';}).join('')+'</div>';}
+ else {h+='<div class="etapas">'+a.itens.map(function(i,n){return '<div class="etapa"><div class="n">'+(n+1)+'</div><div class="etapa-txt"><b>'+i[0]+'</b><p>'+i[1]+'</p><p class="tec">Ferramenta: '+i[2]+'</p><p><span class="lbl">Exemplo de anotação no caderno:</span> “'+i[3]+'”</p></div>'+ilu(i[0])+'</div>';}).join('')+'</div>';}
  return h+'</div>';
 }
 function cadernoHTML(abaAtiva,fixa){
@@ -215,7 +239,17 @@ var PP=[
  {t:'Você quer saber se o rio da sua cidade é perene ou intermitente.',o:['Meu rio é legal?','O rio X, da cidade Y, tem água o ano todo ou seca em alguma época? Onde posso conferir essa informação?','Rio.'],c:1,x:'Diga <b>qual rio</b> e <b>qual cidade</b>, e peça <b>onde conferir</b>. Assim você já sai com a fonte.'},
  {t:'Você vai usar a IA na atividade da escola.',o:['Usar escondido e dizer que fez tudo sozinho.','Avisar a professora, mostrar o pedido que fez e conferir a resposta junto.','Pedir para a IA fazer a prova.'],c:1,x:'IA se usa <b>com a professora</b>, mostrando o que pediu e conferindo a resposta. Isso é usar a tecnologia com honestidade.'}
 ];
-var DIARIO_ETAPAS=CAD.atividade.itens;
+var ETAPAS=CAD.atividade.itens;
+var FERR=[['buscador','Buscador na internet','search',C.ceu],['fontes','Sites oficiais, livros, professora','book-open',C.sol],['planilha','Planilha (tabela no computador)','table',C.terra],['grafico','Gráfico de barras','chart-histogram',C.rio],['mapa','Mapa digital ou impresso','map-draw',C.folha],['ia','Assistente de IA, com a professora','robot-one',C.coral],['cartaz','Cartaz, slides ou vídeo','projector',C.roxo]];
+var PF=[
+ {f:'Quero saber onde fica a nascente do Rio Iguaçu.',c:'buscador',x:'Para <b>pesquisar</b>, usamos um buscador na internet, com palavras bem escolhidas.'},
+ {f:'Achei a informação num site. Quero ter certeza de que está certa.',c:'fontes',x:'Para <b>conferir</b>, procuramos a mesma informação em um site oficial, num livro ou com a professora.'},
+ {f:'Tenho os dados de 3 rios e quero colocar em linhas e colunas.',c:'planilha',x:'Para <b>organizar dados</b>, usamos uma planilha: cada rio numa linha, cada informação numa coluna.'},
+ {f:'Quero mostrar com desenho quantos usos cada rio tem.',c:'grafico',x:'Para comparar números, criamos um <b>gráfico de barras</b>.'},
+ {f:'Quero marcar a nascente, o curso e a foz do rio.',c:'mapa',x:'Para localizar, usamos um <b>mapa</b> digital ou impresso.'},
+ {f:'Não entendi uma palavra difícil e quero uma explicação simples.',c:'ia',x:'Podemos <b>pedir ajuda à IA</b> com um bom pedido, e conferir a resposta com a professora.'},
+ {f:'Quero mostrar para a turma tudo o que descobri.',c:'cartaz',x:'Para <b>apresentar</b>, fazemos um cartaz, slides ou um vídeo.'}
+];
 
 /* ======================================================================
    PARADAS DA EXPEDIÇÃO
@@ -272,9 +306,9 @@ var PARADAS=[
   cartao:function(it){return '<div class="tag">Situação</div><div class="fig">'+icone('message',C.ceu)+'</div><div class="frase">'+it.t+'</div><div class="desc">Qual é a melhor escolha?</div>';},
   opcoes:function(it){return emb(it.o.map(function(t,i){return {v:i,t:t};})).map(function(o,n){return {v:o.v,html:'<span class="num">'+(n+1)+'</span>'+o.t};});},
   titOk:function(){return 'Boa escolha!';},dica:'Pense: o pedido diz para quem, o que e como? A atitude confere a resposta?'},
- {id:'diario',nome:'Diário de bordo',parada:'Foz',ic:'notebook-and-pen',cor:C.rio,aba:'atividade',perg:'Como a tecnologia ajuda a estudar e cuidar dos rios?',
-  resp:'Pesquisando, conferindo as fontes, organizando dados em <b>tabelas</b>, criando <b>gráficos</b> e <b>mapas</b>, pedindo ajuda à <b>IA</b> do jeito certo e <b>apresentando</b> o que descobrimos.',
-  como:'Chegamos à foz! Escreva o seu registro das etapas da atividade. Pode ser curtinho. Depois toque em Guardar.',jogar:jogoDiario,n:1}
+ {id:'plano',nome:'Plano de pesquisa',parada:'Foz',ic:'checklist',cor:C.rio,aba:'atividade',perg:'Como a tecnologia ajuda a estudar e cuidar dos rios?',
+  resp:'Pesquisando, conferindo as fontes, organizando dados em <b>tabelas</b>, criando <b>gráficos</b> e <b>mapas</b>, pedindo ajuda à <b>IA</b> do jeito certo e <b>apresentando</b> o que descobrimos. Anote cada etapa no seu caderno: é o seu diário de bordo.',
+  como:'Chegamos à foz! Primeiro coloque as 7 etapas da atividade na ordem certa. Depois escolha a ferramenta certa para cada tarefa.',jogar:jogoPlano,n:ETAPAS.length+PF.length}
 ];
 var ESTS=[[80,70],[215,150],[365,95],[505,160],[645,105],[790,165],[770,290],[560,345],[395,420],[600,462]];
 
@@ -339,12 +373,12 @@ function aviso2(b,t){b.classList.remove('treme');void b.offsetWidth;b.classList.
 /* ======================================================================
    NAVEGAÇÃO
    ====================================================================== */
-function mostra(id){['mapa','jogo','caderno','diario','ajustes'].forEach(function(t){var e=$(t);e.classList.toggle('oculto',t!==id);if(t===id){e.classList.remove('entra');void e.offsetWidth;e.classList.add('entra');}});
- ['Mapa','Caderno','Diario','Ajustes'].forEach(function(n){$('bt'+n).classList.toggle('ativo',n.toLowerCase()===id);});
- if(id==='mapa')telaMapa();if(id==='caderno')telaCaderno();if(id==='diario')telaDiario();if(id==='ajustes')telaAjustes();
+function mostra(id){['mapa','jogo','caderno','ajustes'].forEach(function(t){var e=$(t);e.classList.toggle('oculto',t!==id);if(t===id){e.classList.remove('entra');void e.offsetWidth;e.classList.add('entra');}});
+ ['Mapa','Caderno','Ajustes'].forEach(function(n){$('bt'+n).classList.toggle('ativo',n.toLowerCase()===id);});
+ if(id==='mapa')telaMapa();if(id==='caderno')telaCaderno();if(id==='ajustes')telaAjustes();
  window.scrollTo({top:0,behavior:est.anim?'smooth':'auto'});
 }
-function telaCaderno(){var c=$('caderno');c.innerHTML='';c.appendChild(el('div',null,balaoCapi('Caderno de campo','Aqui estão todas as informações da nossa expedição, organizadas por tema. Toque nas abas para folhear.')));var cad=el('div',null,cadernoHTML('visao'));c.appendChild(cad.firstChild);ligaAbas(c);}
+function telaCaderno(){var c=$('caderno');c.innerHTML='';c.appendChild(el('div',null,balaoCapi('Caderno de campo','Aqui estão as informações da nossa expedição, com desenhos, exemplos e a fonte de cada uma. Toque nas abas para folhear.')));var cad=el('div',null,cadernoHTML('visao'));c.appendChild(cad.firstChild);ligaAbas(c);}
 function janela(html,cls){var j=$('janela');j.innerHTML='';var cx=el('div','cartao '+(cls||''),html);j.appendChild(cx);j.classList.remove('oculto');return cx;}
 function fechaJanela(){$('janela').classList.add('oculto');}
 function abreCadernoJanela(aba){var cx=janela('<button class="bt-redondo fecha-janela" aria-label="Fechar">'+icone('close-one',C.coral)+'</button>'+cadernoHTML(aba||'visao'),'caderno-janela');cx.querySelector('.fecha-janela').onclick=fechaJanela;ligaAbas(cx);}
@@ -454,22 +488,29 @@ function jogoTabela(){
  passo();
 }
 
-/* ---------- Parada e tela: diário de bordo ---------- */
-function folhaDiario(modoParada){
- var f=el('div','diario-folha');f.innerHTML='<h2>Diário de bordo'+(est.nome?' de '+est.nome:'')+'</h2><p class="sub">Meu registro das 7 etapas da atividade de Computação e IA. Escreva com as suas palavras. Pode ser curtinho.</p>';
- DIARIO_ETAPAS.forEach(function(e,n){var r=el('div','registro'+(est.diario[n]?' feito':''));r.innerHTML='<div class="cab"><div class="n">'+(n+1)+'</div><div><b>'+e[0]+'</b><small>'+e[1]+'</small><span class="dica-t">Ferramenta: '+e[2]+'</span></div></div><textarea aria-label="Meu registro: '+e[0]+'" placeholder="Meu registro..."></textarea><div class="exemplo">Exemplo: “'+e[3]+'”</div>';
-  var ta=r.querySelector('textarea');ta.value=est.diario[n]||'';ta.oninput=function(){est.diario[n]=ta.value;r.classList.toggle('feito',!!ta.value.trim());salva();f.querySelector('.salvo').textContent='Guardado neste computador.';};f.appendChild(r);});
- var bts=el('div','linha-bts nao-imprime');
- if(!est.nome){var inp=el('input','campo-nome');inp.placeholder='Seu nome';inp.setAttribute('aria-label','Seu nome');inp.maxLength=30;inp.onchange=function(){est.nome=inp.value.trim();salva();f.querySelector('h2').textContent='Diário de bordo'+(est.nome?' de '+est.nome:'');};bts.appendChild(inp);}
- var bs=el('button','bt-principal',icone(modoParada?'check-one':'write','#fff')+(modoParada?'Guardar e concluir':'Guardar'));bs.onclick=function(){salva();tom(SOM.certo);if(modoParada)concluiParada();else f.querySelector('.salvo').textContent='Diário guardado neste computador.';};bts.appendChild(bs);
- var bi=el('button','bt-leve',icone('printer',C.ceu)+'Imprimir');bi.onclick=function(){imprime(f.cloneNode(true),true);};bts.appendChild(bi);
- f.appendChild(bts);f.appendChild(el('div','salvo',''));
- return f;
+/* ---------- Parada: plano de pesquisa (ordem das etapas + ferramentas) ---------- */
+function jogoPlano(){
+ var palco=$('palco');var k=0,restam=emb(ETAPAS.map(function(e,n){return n;}));var feitas=[];
+ function listaOrdem(){return '<ol class="ordem">'+ETAPAS.map(function(e,n){var ok=feitas.indexOf(n)>=0;return '<li class="'+(ok?'ok':'')+'">'+(ok?icone('check-one',C.rio)+e[0]:'<span class="vago">etapa '+(n+1)+'</span>')+'</li>';}).join('')+'</ol>';}
+ function passoA(){var alvo=feitas.length;J.k=k;desenhaPrevia();palco.innerHTML='';$('aviso').innerHTML='';
+  palco.appendChild(el('div','cartao-sit','<div class="tag">Parte 1: a ordem das etapas</div><div class="frase">Qual é a etapa '+(alvo+1)+' de 7?</div><div class="desc">'+(alvo===0?'Por onde uma pesquisa começa?':'Depois de <b>'+ETAPAS[feitas[feitas.length-1]][0]+'</b>, o que vem?')+'</div>'+listaOrdem()));
+  J.textoOuvir='Qual é a etapa '+(alvo+1)+' de 7?';
+  var ops=el('div','opcoes grade4');restam.forEach(function(n){var e=ETAPAS[n];var b=el('button','opcao',icone(e[4],C.ceu)+e[0]);b.onclick=function(){if(ops.classList.contains('travada'))return;
+   if(n===alvo){ops.classList.add('travada');tom(SOM.certo);b.classList.add('certa');b.appendChild(el('span','ok-op',icone('check-one',C.rio)));ops.querySelectorAll('.opcao').forEach(function(x){if(x!==b)x.classList.add('fora');});feitas.push(n);restam.splice(restam.indexOf(n),1);
+    avisa('<b>Etapa '+(alvo+1)+': '+e[0]+'.</b> '+e[1],true,restam.length?'Próxima etapa':'Agora as ferramentas',function(){k++;if(restam.length)passoA();else passoB();});}
+   else erro(b,'Pense na ordem: '+(alvo===0?'tudo começa procurando informação.':'o que precisa estar pronto antes dessa etapa?'));};ops.appendChild(b);});
+  palco.appendChild(ops);}
+ var itensB=emb(PF),kb=0;
+ function passoB(){var it=itensB[kb];J.k=k;desenhaPrevia();palco.innerHTML='';$('aviso').innerHTML='';
+  palco.appendChild(el('div','cartao-sit','<div class="tag">Parte 2: qual ferramenta?</div><div class="fig">'+icone('tool',C.rio)+'</div><div class="frase">'+it.f+'</div><div class="desc">Qual ferramenta ajuda aqui?</div>'));J.textoOuvir=it.f+' Qual ferramenta ajuda aqui?';
+  var ops=el('div','opcoes grade4');var opc=emb(FERR.filter(function(f){return f[0]!==it.c;})).slice(0,3).concat([pega(FERR,it.c)]);emb(opc).forEach(function(f){var b=el('button','opcao',icone(f[2],f[3])+f[1]);b.onclick=function(){if(ops.classList.contains('travada'))return;
+   if(f[0]===it.c){ops.classList.add('travada');tom(SOM.certo);b.classList.add('certa');b.appendChild(el('span','ok-op',icone('check-one',C.rio)));ops.querySelectorAll('.opcao').forEach(function(x){if(x!==b)x.classList.add('fora');});
+    avisa('<b>'+f[1]+'!</b> '+it.x,true,kb+1<itensB.length?'Próxima':'Concluir parada',function(){k++;kb++;if(kb<itensB.length)passoB();else concluiParada();});}
+   else erro(b,'Pense de novo: qual ferramenta faz exatamente isso?');};ops.appendChild(b);});
+  palco.appendChild(ops);}
+ passoA();
 }
-function jogoDiario(){var palco=$('palco');palco.innerHTML='';$('aviso').innerHTML='';palco.appendChild(folhaDiario(true));J.textoOuvir='Escreva o seu registro das sete etapas da atividade. Depois toque em Guardar e concluir.';}
-function telaDiario(){var d=$('diario');d.innerHTML='';d.appendChild(el('div',null,balaoCapi('Diário de bordo','Aqui você registra o que fez em cada etapa da atividade. Tudo fica guardado neste computador e você pode imprimir.')));d.appendChild(folhaDiario(false));}
-function imprime(node,comTextos){var imp=$('impressao')||document.body.appendChild(el('div'));imp.id='impressao';imp.innerHTML='';if(comTextos){node.querySelectorAll('textarea').forEach(function(t){var p=el('div','impresso',t.value.replace(/</g,'&lt;').replace(/\n/g,'<br>')||'&nbsp;');t.replaceWith(p);});node.querySelectorAll('.nao-imprime,.salvo').forEach(function(x){x.remove();});}
- imp.appendChild(node);document.body.classList.add('imprimindo');setTimeout(function(){window.print();document.body.classList.remove('imprimindo');},100);}
+function imprime(node){var imp=$('impressao')||document.body.appendChild(el('div'));imp.id='impressao';imp.innerHTML='';imp.appendChild(node);document.body.classList.add('imprimindo');setTimeout(function(){window.print();document.body.classList.remove('imprimindo');},100);}
 
 /* ---------- Certificado de participação ---------- */
 function certificadoHTML(){var hoje=new Date().toLocaleDateString('pt-BR');
@@ -478,9 +519,8 @@ function abreCertificado(){
  var cx=janela('<div class="kick">Parabéns pela expedição!</div>','cert-janela');
  if(!est.nome){var inp=el('input','campo-nome');inp.placeholder='Escreva seu nome';inp.maxLength=30;inp.setAttribute('aria-label','Seu nome para o certificado');var bn=el('button','bt-principal',icone('check-one','#fff')+'Pronto');bn.onclick=function(){est.nome=inp.value.trim()||'';salva();fechaJanela();abreCertificado();};cx.appendChild(el('p','sub','Qual é o seu nome, explorador?'));cx.appendChild(inp);cx.appendChild(bn);var bp0=el('button','bt-leve',icone('arrow-left',TINTA)+'Depois');bp0.onclick=fechaJanela;cx.appendChild(bp0);inp.focus();return;}
  cx.insertAdjacentHTML('beforeend',certificadoHTML());
- var bts=el('div','linha-bts');var bi=el('button','bt-principal',icone('printer','#fff')+'Imprimir');bi.onclick=function(){var n=el('div');n.innerHTML=certificadoHTML();imprime(n,false);};bts.appendChild(bi);
- var bd=el('button','bt-leve',icone('notebook-and-pen',C.rio)+'Ver meu diário');bd.onclick=function(){fechaJanela();mostra('diario');};bts.appendChild(bd);
- var bf=el('button','bt-leve',icone('close-one',C.coral)+'Fechar');bf.onclick=fechaJanela;bts.appendChild(bf);cx.appendChild(bts);
+ var bts=el('div','linha-bts');var bi=el('button','bt-principal',icone('printer','#fff')+'Imprimir');bi.onclick=function(){var n=el('div');n.innerHTML=certificadoHTML();imprime(n);};bts.appendChild(bi);
+  var bf=el('button','bt-leve',icone('close-one',C.coral)+'Fechar');bf.onclick=fechaJanela;bts.appendChild(bf);cx.appendChild(bts);
 }
 
 /* ======================================================================
@@ -496,21 +536,21 @@ function telaAjustes(){
  chave('magic','Animações','Barquinho, confete e movimentos. Desligue se incomodar.','anim');
  chave('projector','Modo turma','Letras maiores para projetar no quadro.','turma');
  chave('unlock','Todas as paradas abertas','Deixa escolher qualquer parada, sem precisar seguir a ordem.','livre');
- var nome=el('div','ajuste',icone('user',C.ceu)+'<div class="txt">Nome do explorador<small>Aparece no mapa, no diário e no certificado.</small></div>');var inp=el('input','campo-nome');inp.value=est.nome||'';inp.placeholder='Nome';inp.maxLength=30;inp.style.fontSize='18px';inp.style.width='150px';inp.setAttribute('aria-label','Nome do explorador');inp.onchange=function(){est.nome=inp.value.trim();salva();};nome.appendChild(inp);lista.appendChild(nome);
- var rec=el('button','ajuste perigo',icone('refresh',C.coral)+'<div class="txt">Recomeçar a expedição<small>Apaga as paradas concluídas e o diário deste computador.</small></div>');rec.onclick=function(){var cx=janela('<div class="carimbo-c" style="--cor-selo:'+C.coral+'">'+icone('refresh',C.coral)+'</div><h2>Recomeçar?</h2><p class="sub">As paradas concluídas, o nome e o diário serão apagados deste computador.</p>');var l=el('div','linha-bts');var s=el('button','bt-principal',icone('refresh','#fff')+'Sim, recomeçar');s.style.background='linear-gradient(180deg,#F08A6E,'+C.coral+')';s.style.boxShadow='0 7px 0 #B04A33';s.onclick=function(){est.feitas=[];est.diario={};est.nome='';est.ultimaPos=null;salva();fechaJanela();mostra('mapa');};var n=el('button','bt-leve',icone('arrow-left',TINTA)+'Não');n.onclick=fechaJanela;l.appendChild(s);l.appendChild(n);cx.appendChild(l);};lista.appendChild(rec);
+ var nome=el('div','ajuste',icone('user',C.ceu)+'<div class="txt">Nome do explorador<small>Aparece no mapa e no certificado.</small></div>');var inp=el('input','campo-nome');inp.value=est.nome||'';inp.placeholder='Nome';inp.maxLength=30;inp.style.fontSize='18px';inp.style.width='150px';inp.setAttribute('aria-label','Nome do explorador');inp.onchange=function(){est.nome=inp.value.trim();salva();};nome.appendChild(inp);lista.appendChild(nome);
+ var rec=el('button','ajuste perigo',icone('refresh',C.coral)+'<div class="txt">Recomeçar a expedição<small>Apaga as paradas concluídas deste computador.</small></div>');rec.onclick=function(){var cx=janela('<div class="carimbo-c" style="--cor-selo:'+C.coral+'">'+icone('refresh',C.coral)+'</div><h2>Recomeçar?</h2><p class="sub">As paradas concluídas e o nome serão apagados deste computador.</p>');var l=el('div','linha-bts');var s=el('button','bt-principal',icone('refresh','#fff')+'Sim, recomeçar');s.style.background='linear-gradient(180deg,#F08A6E,'+C.coral+')';s.style.boxShadow='0 7px 0 #B04A33';s.onclick=function(){est.feitas=[];est.nome='';est.ultimaPos=null;salva();fechaJanela();mostra('mapa');};var n=el('button','bt-leve',icone('arrow-left',TINTA)+'Não');n.onclick=fechaJanela;l.appendChild(s);l.appendChild(n);cx.appendChild(l);};lista.appendChild(rec);
  a.appendChild(lista);
- a.appendChild(el('p','texto-tela','Conteúdo baseado na planilha Rios: Geografia, Computação e IA. Ícones IconPark (Apache-2.0). Veja CREDITOS.md.'));
+ a.appendChild(el('p','texto-tela','Ícones IconPark (Apache-2.0). Fontes das informações na aba Fontes do caderno de campo. Veja CREDITOS.md.'));
 }
 
 /* ======================================================================
    LIGAÇÕES
    ====================================================================== */
-$('btInicio').onclick=function(){mostra('mapa');};$('btMapa').onclick=function(){mostra('mapa');};$('btCaderno').onclick=function(){mostra('caderno');};$('btDiario').onclick=function(){mostra('diario');};$('btAjustes').onclick=function(){mostra('ajustes');};
+$('btInicio').onclick=function(){mostra('mapa');};$('btMapa').onclick=function(){mostra('mapa');};$('btCaderno').onclick=function(){mostra('caderno');};$('btAjustes').onclick=function(){mostra('ajustes');};
 $('btVoltar').onclick=function(){mostra('mapa');};
 $('btLivro').onclick=function(){abreCadernoJanela(J.p?J.p.aba:'visao');};
 $('btOuvir').onclick=function(){fala(J.textoOuvir||'');};
 $('janela').addEventListener('click',function(e){if(e.target===$('janela'))fechaJanela();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')fechaJanela();});
 document.querySelector('.capi-mini').innerHTML=capi();
-['btMapa','btCaderno','btDiario','btAjustes'].forEach(function(id,n){$(id).insertAdjacentHTML('afterbegin',icone(['map-draw','book-open','notebook-and-pen','setting-two'][n],[C.rio,C.sol,C.ceu,'#64707F'][n]));});
+['btMapa','btCaderno','btAjustes'].forEach(function(id,n){$(id).insertAdjacentHTML('afterbegin',icone(['map-draw','book-open','setting-two'][n],[C.rio,C.sol,'#64707F'][n]));});
 mostra('mapa');
